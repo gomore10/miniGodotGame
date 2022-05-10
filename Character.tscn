@@ -4,8 +4,6 @@
 
 [node name="Character" type="KinematicBody2D"]
 script = ExtResource( 1 )
-walk_speed = null
-jump_force = null
 
 [node name="Sprite" type="Sprite" parent="."]
 

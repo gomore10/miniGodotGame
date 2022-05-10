@@ -4,6 +4,8 @@ export var walk_speed = 2
 export var ground_accel = 2
 export var air_accel = 2
 export var jump_force = 2
+export var path_to_my_node: NodePath
+onready var my_node = get_node(path_to_my_node)
 
 var velocity = Vector2.ZERO
 var onground = false
@@ -21,7 +23,8 @@ func _physics_process(delta):
 	if input_vec != Vector2.ZERO:
 		pass
 	
-	#velocity += 
+	#gravity to asteroid
+	velocity += position
 	
 	velocity = move_and_slide(velocity)
 #velocity = velocity.move_toward(input_vec*walk_speed,ground_accel*delta)

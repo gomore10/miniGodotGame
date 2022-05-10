@@ -10,3 +10,4 @@ position = Vector2( 192.184, 156.354 )
 
 [node name="Character" parent="." instance=ExtResource( 2 )]
 position = Vector2( 194.221, 72.6938 )
+path_to_my_node = NodePath("../Asteroid")

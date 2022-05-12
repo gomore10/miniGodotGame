@@ -20,7 +20,7 @@ func _ready():
 func _physics_process(delta):
 	var input_vec = Vector2.ZERO
 	input_vec.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
-	input_vec.y = Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
+	input_vec.y = 0
 	input_vec=input_vec.normalized()
 	
 	var move_velocity = Vector2.ZERO

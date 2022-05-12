@@ -13,8 +13,14 @@ position = Vector2( 192.184, 156.354 )
 position = Vector2( 194.221, 72.6938 )
 path_to_my_node = NodePath("../Asteroid")
 
+[node name="Camera2D" type="Camera2D" parent="Character"]
+offset = Vector2( 8.149, 70 )
+rotating = true
+current = true
+
 [node name="Enemy" type="Node" parent="."]
 
 [node name="SandMonster" parent="Enemy" instance=ExtResource( 3 )]
 position = Vector2( 256, 106 )
 rotation = 0.942478
+path_to_my_node = NodePath("../../Asteroid")

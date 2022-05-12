@@ -1,22 +1,24 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Asteroid.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Character.tscn" type="PackedScene" id=2]
 [ext_resource path="res://SandMonster.tscn" type="PackedScene" id=3]
+[ext_resource path="res://GameCamera.gd" type="Script" id=4]
 
 [node name="World" type="Node2D"]
 
 [node name="Asteroid" parent="." instance=ExtResource( 1 )]
 position = Vector2( 192.184, 156.354 )
 
-[node name="Character" parent="." instance=ExtResource( 2 )]
-position = Vector2( 194.221, 72.6938 )
-path_to_my_node = NodePath("../Asteroid")
-
-[node name="Camera2D" type="Camera2D" parent="Character"]
-offset = Vector2( 8.149, 70 )
+[node name="Camera2D" type="Camera2D" parent="Asteroid"]
 rotating = true
 current = true
+script = ExtResource( 4 )
+player_path = NodePath("../../Character")
+
+[node name="Character" parent="." instance=ExtResource( 2 )]
+position = Vector2( 194.221, 72.6938 )
+asteroid_path = NodePath("../Asteroid")
 
 [node name="Enemy" type="Node" parent="."]
 

@@ -53,7 +53,6 @@ func _physics_process(delta):
 				if angl>0 and velocity.project(rightvec).length()>walk_speed: #don't go over max speed
 					var newwalkvec=velocity.project(rightvec)/velocity.project(rightvec).length()*walk_speed
 					velocity=velocity-velocity.project(rightvec)+newwalkvec
-					print("capped")
 			else: #walk left
 				Sprite.flip_h=true
 				if angl>0 or velocity.project(leftvec).length()<walk_speed:
@@ -114,7 +113,8 @@ func _physics_process(delta):
 	if get_slide_count()>0: #hit ground
 		onground=true
 		velocity=velocity-velocity.project((position - Asteroid.position))
-		if Animate.current_animation=="Jump": Animate.play("Idle")
+		if Animate.current_animation=="Jump":
+			Animate.play("Idle")
 	else:
 		onground=false
 	look_at(Asteroid.position)

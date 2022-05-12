@@ -15,6 +15,7 @@ rotating = true
 current = true
 script = ExtResource( 4 )
 player_path = NodePath("../../Character")
+asteroid_path = NodePath("..")
 
 [node name="Character" parent="." instance=ExtResource( 2 )]
 position = Vector2( 194.221, 72.6938 )

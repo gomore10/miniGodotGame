@@ -5,10 +5,11 @@
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 7.0
-height = 3.0
+height = 0.0
 
 [sub_resource type="Animation" id=2]
 resource_name = "Jump"
+length = 3.0
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
@@ -16,10 +17,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
+"times": PoolRealArray( 0, 2.9 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 1,
-"values": [ 4 ]
+"values": [ 0, 1 ]
 }
 
 [sub_resource type="Animation" id=3]
@@ -63,12 +64,13 @@ script = ExtResource( 1 )
 texture = ExtResource( 2 )
 hframes = 4
 vframes = 3
-frame = 9
+frame = 4
 region_enabled = true
 region_rect = Rect2( 0, 0, 72, 60 )
 region_filter_clip = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -1 )
 shape = SubResource( 1 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

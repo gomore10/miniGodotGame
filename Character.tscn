@@ -4,8 +4,8 @@
 [ext_resource path="res://SpriteSheet.png" type="Texture" id=2]
 
 [sub_resource type="CapsuleShape2D" id=1]
-radius = 7.1594
-height = 3.48353
+radius = 7.0
+height = 3.0
 
 [sub_resource type="Animation" id=2]
 resource_name = "Idle"

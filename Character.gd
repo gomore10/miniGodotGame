@@ -46,7 +46,6 @@ func _physics_process(delta):
 			if Animate.current_animation!="Walk": Animate.play("Walk")
 			Sprite.flip_h=false
 			if input_vec.x>0: #walk right
-				Animate.current_animation = "walk"
 				if angl<0 or velocity.project(rightvec).length()<walk_speed:
 					move_velocity = rightvec*input_vec.x*ground_accel
 					velocity+=move_velocity

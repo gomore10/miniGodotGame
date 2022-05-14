@@ -8,26 +8,30 @@
 
 [node name="World" type="Node2D"]
 
-[node name="Asteroid" parent="." instance=ExtResource( 1 )]
-position = Vector2( 192.184, 156.354 )
+[node name="InnerAsteroid" parent="." instance=ExtResource( 5 )]
+position = Vector2( 192, 157 )
 
-[node name="Camera2D" type="Camera2D" parent="Asteroid"]
+[node name="YSort" type="YSort" parent="."]
+
+[node name="Asteroid" parent="YSort" instance=ExtResource( 1 )]
+position = Vector2( 192.184, 156.354 )
+z_index = 1
+
+[node name="Camera2D" type="Camera2D" parent="YSort/Asteroid"]
 rotating = true
 current = true
 script = ExtResource( 4 )
 player_path = NodePath("../../Character")
 asteroid_path = NodePath("..")
 
-[node name="Character" parent="." instance=ExtResource( 2 )]
+[node name="Character" parent="YSort" instance=ExtResource( 2 )]
 position = Vector2( 194.221, 72.6938 )
+z_index = 1
 asteroid_path = NodePath("../Asteroid")
 
-[node name="Enemy" type="Node" parent="."]
+[node name="Enemy" type="YSort" parent="YSort"]
 
-[node name="SandMonster" parent="Enemy" instance=ExtResource( 3 )]
+[node name="SandMonster" parent="YSort/Enemy" instance=ExtResource( 3 )]
 position = Vector2( 256, 106 )
 rotation = 0.942478
 path_to_my_node = NodePath("../../Asteroid")
-
-[node name="InnerAsteroid" parent="." instance=ExtResource( 5 )]
-position = Vector2( 192, 157 )

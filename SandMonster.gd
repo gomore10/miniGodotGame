@@ -1,89 +1,64 @@
 extends KinematicBody2D
 
 var velocity = Vector2.ZERO
-var gravity = 200
-var direction = -1
-var walk_speed = 0.1
+var direction = -1 #-1 is left, +1 is right
+var walk_speed = 35
+var rise_speed = 20
+var sink_speed = 25
 var rng = RandomNumberGenerator.new()
-var popup_amount = 200
-var wait = 0
-var inside = 0
-var onground = false
+enum stateTypes {rising, sinking, walking}
+var state = stateTypes.walking
+var walktime = 4
+var undergroundtime = 1
+var walk_range = 2
+var underground_range = .5
 #gets Asteroid node
 export var path_to_my_node: NodePath
 onready var Asteroid = get_node(path_to_my_node)
-
-const change_direction = 2
-
-const change_inside = 5
-
-var time_direction = 0
-var time_inside = 0
-
+onready var asteroid_radius = Asteroid.get_child(0).get_child(0).get_child(0).get_shape().get_radius()
+onready var timer = $Timer
 
 
 func _ready():
 	rng.randomize()
-	
+	state=stateTypes.walking
+	timer.start(rng.randf_range(walktime-walk_range,walktime+walk_range))
 
 func _physics_process(delta):
-	
-	time_direction += delta
-	if time_direction > change_direction:
-		direction = rng.randi_range(1, -1)
-		time_direction = 0
-		
-	time_inside += delta
-	if time_inside > change_inside:
-		inside = rng.randi_range(1, 0)
-		time_inside = 0
-		
-	if inside == 1:
-		velocity+=(position - Asteroid.position).normalized()*popup_amount
-		wait += delta
-		if wait > 2:
-			set_collision_mask_bit(0, true)
-			wait = 0
-	else:
-		set_collision_mask_bit(0, false)
-
-
-	print(wait)
-	print(inside)
-		
-
-	
-	
-	
 	#unit vector pointing right along the asteroid
 	var rightvec=(Asteroid.position - position).rotated(-PI/2).normalized()
 	#same but pointing left
 	var leftvec=(Asteroid.position - position).rotated(PI/2).normalized()
 	
-
+	var move_velocity = rightvec * walk_speed * direction
+	#sink into the ground after a time
+	if state==stateTypes.walking and timer.time_left<=0:
+		timer.start(10000)
+		state=stateTypes.sinking
+	elif state==stateTypes.sinking and timer.time_left<=0:
+		state=stateTypes.rising
+	#sink/rise
+	if state==stateTypes.rising:
+		velocity = (Asteroid.position - position).normalized() * -rise_speed
+	elif state==stateTypes.sinking:
+		velocity = (Asteroid.position - position).normalized() * sink_speed
+	else:
+		velocity = Vector2.ZERO
 	
-	var move_velocity = Vector2.ZERO
-	if direction == 1:
-		$AnimatedSprite.flip_h=true
-		move_velocity = rightvec * walk_speed
-		velocity += move_velocity
-	elif direction == -1:
-		$AnimatedSprite.flip_h=false
-		move_velocity = leftvec * walk_speed
-		velocity += move_velocity
-	
-	
-	
-	#gravity to asteroid
-	var gravity_vector = (Asteroid.position - position).normalized() * gravity
-	
-	velocity = velocity + gravity_vector
-	
+	velocity += move_velocity
 	velocity = move_and_slide(velocity)
-
-
-
-
+	
+	#stay on the ground
+	var amount_over = (Asteroid.position - position).length()-asteroid_radius
+	if amount_over>0:
+		position = Asteroid.position + -(Asteroid.position - position).normalized()*asteroid_radius
+		if state==stateTypes.rising:
+			state=stateTypes.walking
+			timer.start(rng.randf_range(walktime-walk_range,walktime+walk_range))
+	elif amount_over<-50:
+		if timer.time_left>100:
+			timer.start(rng.randf_range(undergroundtime-underground_range,undergroundtime+underground_range))
+	
 	#rotates monster to asteroid
 	look_at(Asteroid.position)
 	rotation-=PI/2

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Wiggle2.png" type="Texture" id=1]
 [ext_resource path="res://wiggle1.png" type="Texture" id=2]
@@ -14,23 +14,39 @@ animations = [ {
 
 [sub_resource type="CapsuleShape2D" id=2]
 radius = 6.0
-height = 16.2317
+height = 16.0
 
-[node name="SandMonster" type="KinematicBody2D"]
+[sub_resource type="CapsuleShape2D" id=3]
+radius = 6.0
+height = 16.0
+
+[node name="SandMonster" type="KinematicBody2D" groups=["enemy"]]
 collision_layer = 2
-collision_mask = 0
+collision_mask = 2
 script = ExtResource( 3 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0, -14 )
 frames = SubResource( 1 )
 animation = "Wiggle"
+frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0.403358, -13.7017 )
+position = Vector2( 0, -13 )
 shape = SubResource( 2 )
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
 autostart = true
+
+[node name="hitbox" type="Area2D" parent="." groups=["enemy_hitbox"]]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]
+position = Vector2( 0, -13 )
+shape = SubResource( 3 )
+
+[connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="body_entered" from="hitbox" to="." method="_on_hitbox_body_entered"]

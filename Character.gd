@@ -12,6 +12,9 @@ export var asteroid_path: NodePath
 onready var Asteroid = get_node(asteroid_path)
 onready var Animate = $AnimationPlayer
 onready var Sprite = $Sprite
+onready var Gun = $Position2D
+
+var bullet = preload("res://Bullet.tscn")
 
 var velocity = Vector2.ZERO
 var onground = false
@@ -116,5 +119,16 @@ func _physics_process(delta):
 			Animate.play("Idle")
 	else:
 		onground=false
+	
+	if Input.is_action_just_pressed("shoot"):
+		var new_bullet = bullet.instance()
+		new_bullet.b_init(Asteroid.position, Asteroid.get_child(0).get_child(0).get_child(0).get_shape().get_radius())
+		new_bullet.position = Gun.global_position
+		get_tree().current_scene.add_child(new_bullet)
+	
 	look_at(Asteroid.position)
 	rotation-=PI/2
+	
+func _on_hurtbox_area_entered(area):
+	if area.is_in_group("enemy_hitbox"):
+		print("hit")

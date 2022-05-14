@@ -59,6 +59,15 @@ func _physics_process(delta):
 		if timer.time_left>100:
 			timer.start(rng.randf_range(undergroundtime-underground_range,undergroundtime+underground_range))
 	
+	
+
+	
 	#rotates monster to asteroid
 	look_at(Asteroid.position)
 	rotation-=PI/2
+	
+func _on_hitbox_area_entered(area):
+	if area.is_in_group("bullet"):
+		print("dead")
+		queue_free()
+		

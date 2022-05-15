@@ -6,13 +6,20 @@ export var ground_accel = 25
 export var air_accel = 10
 export var jump_force = 210
 
+var facing = "right"
+
 export var gravity = 15
 
 export var asteroid_path: NodePath
 onready var Asteroid = get_node(asteroid_path)
 onready var Animate = $AnimationPlayer
 onready var Sprite = $Sprite
-onready var Gun = $Position2D
+onready var Gun_right = get_child(0).get_child(0)
+onready var Gun_left = get_child(0).get_child(1)
+var Gun = position
+
+
+onready var test = Asteroid.position
 
 var bullet = preload("res://Bullet.tscn")
 
@@ -119,15 +126,26 @@ func _physics_process(delta):
 			Animate.play("Idle")
 	else:
 		onground=false
+	#THIS IS WHERE HE SHOOTETH
 	
+	if Sprite.flip_h:
+		facing = "left"
+		Gun = Gun_left
+	else:
+		facing = "right"
+		Gun = Gun_right
+		
 	if Input.is_action_just_pressed("shoot"):
+		
 		var new_bullet = bullet.instance()
-		new_bullet.b_init(Asteroid.position, Asteroid.get_child(0).get_child(0).get_child(0).get_shape().get_radius())
+		new_bullet.b_init(Asteroid.position, (Asteroid.position - (Gun.global_position)).length(), facing)
 		new_bullet.position = Gun.global_position
 		get_tree().current_scene.add_child(new_bullet)
 	
 	look_at(Asteroid.position)
+	
 	rotation-=PI/2
+
 	
 func _on_hurtbox_area_entered(area):
 	if area.is_in_group("enemy_hitbox"):

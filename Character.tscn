@@ -73,6 +73,12 @@ region_enabled = true
 region_rect = Rect2( 0, 0, 88, 60 )
 region_filter_clip = true
 
+[node name="GunRight" type="Position2D" parent="Sprite"]
+position = Vector2( 12.1303, -1.36234 )
+
+[node name="GunLeft" type="Position2D" parent="Sprite"]
+position = Vector2( -12, -1 )
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
 
@@ -80,9 +86,6 @@ shape = SubResource( 1 )
 anims/Idle = SubResource( 2 )
 anims/Jump = SubResource( 3 )
 anims/Walk = SubResource( 4 )
-
-[node name="Position2D" type="Position2D" parent="."]
-position = Vector2( 13, -2 )
 
 [node name="hurtbox" type="Area2D" parent="."]
 collision_layer = 3

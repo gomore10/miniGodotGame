@@ -9,7 +9,7 @@ var spawn_height = 300
 enum stateTypes {entering,spawning,leaving}
 var state=stateTypes.entering
 export var asteroid_path: NodePath
-onready var Asteroid = get_node(asteroid_path)
+var Asteroid = null
 onready var Animate = $AnimationPlayer
 onready var Sprite = $Sprite
 var rng = RandomNumberGenerator.new()
@@ -40,7 +40,7 @@ func _physics_process(delta):
 		new_alien.position = position + (Asteroid.position - position).normalized()*5
 		new_alien.direction = rng.randi_range(0,1)
 		if new_alien.direction == 0: new_alien.direction=-1
-		get_tree().current_scene.add_child(new_alien)
+		get_parent().add_child(new_alien)
 	
 	if state==stateTypes.entering:
 		velocity = rightvec*direction*move_speed

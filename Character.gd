@@ -1,5 +1,6 @@
 extends KinematicBody2D
 
+var health=3
 export var walk_speed = 130
 export var air_speed = 130
 export var ground_accel = 25
@@ -12,6 +13,8 @@ export var gravity = 15
 
 export var asteroid_path: NodePath
 onready var Asteroid = get_node(asteroid_path)
+export var ui_path: NodePath
+onready var UI = get_node(ui_path)
 onready var Animate = $AnimationPlayer
 onready var Sprite = $Sprite
 onready var Gun_right = get_child(0).get_child(0)
@@ -140,7 +143,7 @@ func _physics_process(delta):
 		var new_bullet = bullet.instance()
 		new_bullet.b_init(Asteroid.position, (Asteroid.position - (Gun.global_position)).length(), facing)
 		new_bullet.position = Gun.global_position
-		get_tree().current_scene.add_child(new_bullet)
+		get_parent().add_child(new_bullet)
 	
 	look_at(Asteroid.position)
 	
@@ -149,4 +152,11 @@ func _physics_process(delta):
 	
 func _on_hurtbox_area_entered(area):
 	if area.is_in_group("enemy_hitbox"):
-		print("hit")
+		damage()
+
+func damage():
+	health-=1
+	UI.set_health(health)
+	if health==0:
+		queue_free()
+		#dead temp

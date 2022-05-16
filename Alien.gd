@@ -74,5 +74,4 @@ func _physics_process(delta):
 
 
 func die():
-	print("HI")
 	queue_free()

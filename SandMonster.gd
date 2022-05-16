@@ -3,7 +3,7 @@ extends KinematicBody2D
 var velocity = Vector2.ZERO
 var direction = -1 #-1 is left, +1 is right
 var walk_speed = 35
-var rise_speed = 20
+var rise_speed = 15
 var sink_speed = 25
 var rng = RandomNumberGenerator.new()
 enum stateTypes {rising, sinking, walking}
@@ -14,16 +14,21 @@ var walk_range = 2
 var underground_range = .5
 #gets Asteroid node
 export var path_to_my_node: NodePath
-onready var Asteroid = get_node(path_to_my_node)
+var Asteroid = null
 onready var asteroid_radius = Asteroid.get_child(0).get_child(0).get_child(0).get_shape().get_radius()
 onready var timer = $Timer
 onready var dirtanim = $dirtanim
-
+onready var Sprite = $AnimatedSprite
 
 func _ready():
 	rng.randomize()
-	state=stateTypes.walking
-	timer.start(rng.randf_range(walktime-walk_range,walktime+walk_range))
+	state=stateTypes.rising
+	position=Asteroid.position+Vector2(rng.randf_range(-1,1),rng.randf_range(-1,1))
+	direction = rng.randi_range(0,1)
+	if direction==0: direction=-1
+	if direction==1:
+		Sprite.flip_h=true
+	dirtanim.hide()
 
 func _physics_process(delta):
 	#unit vector pointing right along the asteroid
@@ -71,7 +76,7 @@ func _physics_process(delta):
 	dirtanim.position = Vector2(0,amount_over)
 	if state==stateTypes.sinking and amount_over<-30:
 		dirtanim.hide()
-	elif state==stateTypes.rising and amount_over>-30:
+	elif state==stateTypes.rising and amount_over>-38:
 		dirtanim.show()
 	
 func die():

@@ -47,5 +47,7 @@ func _physics_process(delta):
 func _on_Area2D_area_entered(area):
 	if area.is_in_group("enemy_hitbox"):
 		area.get_parent().die()
-		print("bulletdead")
+		queue_free()
+	elif area.is_in_group("character_hurtbox"):
+		area.get_parent().damage()
 		queue_free()

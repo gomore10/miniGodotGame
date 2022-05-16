@@ -17,6 +17,7 @@ export var path_to_my_node: NodePath
 onready var Asteroid = get_node(path_to_my_node)
 onready var asteroid_radius = Asteroid.get_child(0).get_child(0).get_child(0).get_shape().get_radius()
 onready var timer = $Timer
+onready var dirtanim = $dirtanim
 
 
 func _ready():
@@ -66,8 +67,12 @@ func _physics_process(delta):
 	look_at(Asteroid.position)
 	rotation-=PI/2
 	
-func _on_hitbox_area_entered(area):
-	if area.is_in_group("bullet"):
-		print("dead")
-		queue_free()
-		
+	#dirt animation
+	dirtanim.position = Vector2(0,amount_over)
+	if state==stateTypes.sinking and amount_over<-30:
+		dirtanim.hide()
+	elif state==stateTypes.rising and amount_over>-30:
+		dirtanim.show()
+	
+func die():
+	queue_free()

@@ -41,13 +41,11 @@ func _physics_process(delta):
 	
 	position = asteroid_position + -(asteroid_position - position).normalized()*gun_distance
 	
-		
-
-
 
 
 
 func _on_Area2D_area_entered(area):
 	if area.is_in_group("enemy_hitbox"):
+		area.get_parent().die()
 		print("bulletdead")
 		queue_free()

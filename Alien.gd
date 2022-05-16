@@ -8,7 +8,7 @@ export var jump_force = 210
 export var gravity = 15
 
 export var asteroid_path: NodePath
-onready var Asteroid = get_node(asteroid_path)
+var Asteroid = null
 onready var Animate = $AnimationPlayer
 onready var Sprite = $Sprite
 
@@ -73,8 +73,6 @@ func _physics_process(delta):
 	rotation-=PI/2
 
 
-func _on_hitbox_area_entered(area):
-	if area.is_in_group("bullet"):
-		print("dead")
-		queue_free()
-		
+func die():
+	print("HI")
+	queue_free()

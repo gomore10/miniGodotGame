@@ -1,80 +1,69 @@
 extends KinematicBody2D
 
-export var walk_speed = 60
+var move_speed = 320
 var direction = 1
-export var ground_accel = 25
-export var jump_force = 210
-
-export var gravity = 15
-
+var drop_height = 100
+var descend_speed = 80
+var leave_speed = 80
+var spawn_height = 300
+enum stateTypes {entering,spawning,leaving}
+var state=stateTypes.entering
 export var asteroid_path: NodePath
 onready var Asteroid = get_node(asteroid_path)
 onready var Animate = $AnimationPlayer
 onready var Sprite = $Sprite
-
+var rng = RandomNumberGenerator.new()
 var velocity = Vector2.ZERO
-var onground = false
-var jump = false
+
+var alien = preload("res://Alien.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	rng.randomize()
+	Animate.play("Idle")
+	var spawn_angle=rng.randf_range(0,2*PI)
+	position = Vector2(1,0).rotated(spawn_angle)*spawn_height+Asteroid.position
+	direction = rng.randi_range(0,1)
+	if direction==0: direction=-1
 
 func _physics_process(delta):
-	#move right and left
-	var move_velocity = Vector2.ZERO
-	if onground:
-		#unit vector pointing right along the asteroid
-		var rightvec=(Asteroid.position - position).rotated(-PI/2).normalized()
-		#same but pointing left
-		var leftvec=(Asteroid.position - position).rotated(PI/2).normalized()
-		#direction of current movement
-		var angl=(velocity.angle_to(Asteroid.position - position)) 
+	#unit vector pointing right along the asteroid
+	var rightvec=(Asteroid.position - position).rotated(-PI/2).normalized()
+	#same but pointing left
+	var leftvec=(Asteroid.position - position).rotated(PI/2).normalized()
+	
+	#spawn alien dude and fly away
+	if state==stateTypes.spawning and Animate.is_playing()==false:
+		state=stateTypes.leaving
+		var new_alien = alien.instance()
+		new_alien.Asteroid = Asteroid
+		new_alien.position = position + (Asteroid.position - position).normalized()*5
+		new_alien.direction = rng.randi_range(0,1)
+		if new_alien.direction == 0: new_alien.direction=-1
+		get_tree().current_scene.add_child(new_alien)
+	
+	if state==stateTypes.entering:
+		velocity = rightvec*direction*move_speed
+		velocity += (Asteroid.position - position).normalized()*descend_speed
+	elif state==stateTypes.spawning:
+		velocity=Vector2.ZERO
+	elif state==stateTypes.leaving:
+		velocity = rightvec*direction*move_speed
+		velocity += -(Asteroid.position - position).normalized()*leave_speed
 		
-		if direction==1: #walk right
-			if Animate.current_animation!="walk": Animate.play("walk")
-			Sprite.flip_h=true
-			if angl<0 or velocity.project(rightvec).length()<walk_speed:
-				move_velocity = rightvec*direction*ground_accel
-				velocity+=move_velocity
-			if angl>0 and velocity.project(rightvec).length()>walk_speed: #don't go over max speed
-				var newwalkvec=velocity.project(rightvec)/velocity.project(rightvec).length()*walk_speed
-				velocity=velocity-velocity.project(rightvec)+newwalkvec
-		elif direction==-1: #walk left
-			if Animate.current_animation!="walk": Animate.play("walk")
-			Sprite.flip_h=false
-			if angl>0 or velocity.project(leftvec).length()<walk_speed:
-				move_velocity = rightvec*direction*ground_accel
-				velocity+=move_velocity
-			if angl<0 and velocity.project(leftvec).length()>walk_speed: #don't go over max speed
-				var newwalkvec=velocity.project(leftvec)/velocity.project(leftvec).length()*walk_speed
-				velocity=velocity-velocity.project(leftvec)+newwalkvec
-	
-	#jump
-	if onground and jump:
-		Animate.play("jump")
-		onground=false
-		velocity+=(position - Asteroid.position).normalized()*jump_force
-	
-	#gravity to asteroid
-	var gravity_vector = (Asteroid.position - position).normalized() * gravity
-	
-	velocity = velocity + gravity_vector
-	
+	#ease in/out
+	velocity *= pow(((Asteroid.position - position).length()/150),2)
+	#move right and left
 	velocity = move_and_slide(velocity)
-	if get_slide_count()>0: #hit ground
-		onground=true
-		velocity=velocity-velocity.project((position - Asteroid.position))
-		if Animate.current_animation=="jump":
-			Animate.play("idle")
-	else:
-		onground=false
+	
+	var amount_over = (Asteroid.position - position).length()-drop_height
+	if amount_over<=0 and state==stateTypes.entering:
+		state=stateTypes.spawning
+		Animate.play("Drop")
+	
 	look_at(Asteroid.position)
 	rotation-=PI/2
 
 
-func _on_hitbox_area_entered(area):
-	if area.is_in_group("bullet"):
-		print("dead")
-		queue_free()
-		
+func die():
+	queue_free()

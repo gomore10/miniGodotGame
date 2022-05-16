@@ -61,7 +61,9 @@ shape = SubResource( 1 )
 anims/idle = SubResource( 2 )
 anims/walk = SubResource( 3 )
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." groups=[
+"enemy_hitbox",
+]]
 collision_layer = 2
 collision_mask = 8
 
@@ -69,4 +71,3 @@ collision_mask = 8
 position = Vector2( 0, 1 )
 rotation = 1.5708
 shape = SubResource( 4 )
-[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]

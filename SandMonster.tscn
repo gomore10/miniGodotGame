@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Wiggle2.png" type="Texture" id=1]
 [ext_resource path="res://wiggle1.png" type="Texture" id=2]
 [ext_resource path="res://SandMonster.gd" type="Script" id=3]
+[ext_resource path="res://digsheet.png" type="Texture" id=4]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -12,7 +13,31 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="CapsuleShape2D" id=3]
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 0, 26, 5 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 5, 26, 5 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 10, 26, 5 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 4 )
+region = Rect2( 0, 15, 26, 5 )
+
+[sub_resource type="SpriteFrames" id=7]
+animations = [ {
+"frames": [ SubResource( 3 ), SubResource( 4 ), SubResource( 5 ), SubResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 6.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=2]
 radius = 6.0
 height = 16.0
 
@@ -29,6 +54,12 @@ frames = SubResource( 1 )
 animation = "Wiggle"
 playing = true
 
+[node name="dirtanim" type="AnimatedSprite" parent="."]
+z_index = 3
+frames = SubResource( 7 )
+frame = 2
+playing = true
+
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
 autostart = true
@@ -41,6 +72,4 @@ collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]
 position = Vector2( 0, -13 )
-shape = SubResource( 3 )
-[connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
-[connection signal="body_entered" from="hitbox" to="." method="_on_hitbox_body_entered"]
+shape = SubResource( 2 )

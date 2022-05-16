@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://aliensheet.png" type="Texture" id=1]
 [ext_resource path="res://Alien.gd" type="Script" id=2]
@@ -21,6 +21,22 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=5]
+resource_name = "jump"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 4 ]
 }
 
 [sub_resource type="Animation" id=3]
@@ -50,7 +66,8 @@ script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
-hframes = 4
+hframes = 5
+frame = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, 1 )
@@ -59,6 +76,7 @@ shape = SubResource( 1 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/idle = SubResource( 2 )
+anims/jump = SubResource( 5 )
 anims/walk = SubResource( 3 )
 
 [node name="Hitbox" type="Area2D" parent="." groups=[
@@ -71,3 +89,6 @@ collision_mask = 8
 position = Vector2( 0, 1 )
 rotation = 1.5708
 shape = SubResource( 4 )
+
+[node name="JumpTimer" type="Timer" parent="."]
+one_shot = true

@@ -5,11 +5,11 @@ export var walk_speed = 130
 export var air_speed = 130
 export var ground_accel = 25
 export var air_accel = 10
-export var jump_force = 210
+export var jump_force = 100
 
 var facing = "right"
 
-export var gravity = 15
+export var gravity = 7
 
 export var asteroid_path: NodePath
 onready var Asteroid = get_node(asteroid_path)
@@ -158,5 +158,5 @@ func damage():
 	health-=1
 	UI.set_health(health)
 	if health==0:
-		queue_free()
-		#dead temp
+		#for testing
+		health=3

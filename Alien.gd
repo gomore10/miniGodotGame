@@ -3,24 +3,30 @@ extends KinematicBody2D
 export var walk_speed = 60
 var direction = 1
 export var ground_accel = 25
-export var jump_force = 210
+export var jump_force = 62
 
-export var gravity = 15
+export var gravity = 2
 
 export var asteroid_path: NodePath
 var Asteroid = null
 onready var Animate = $AnimationPlayer
 onready var Sprite = $Sprite
+onready var JumpTimer = $JumpTimer
 
 var velocity = Vector2.ZERO
 var onground = false
 var jump = false
+var jumptime = 2
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	JumpTimer.start(jumptime)
 
 func _physics_process(delta):
+	if JumpTimer.time_left<=0:
+		jump=true
+		JumpTimer.start(jumptime)
+	
 	#move right and left
 	var move_velocity = Vector2.ZERO
 	if onground:
@@ -53,6 +59,7 @@ func _physics_process(delta):
 	#jump
 	if onground and jump:
 		Animate.play("jump")
+		jump=false
 		onground=false
 		velocity+=(position - Asteroid.position).normalized()*jump_force
 	
